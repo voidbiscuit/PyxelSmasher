@@ -1,5 +1,5 @@
 # Imports
-from PIL import Image, ImageFilter, ImageShow
+from PIL import Image, ImageShow
 import picturefunctions as pf
 
 # File Open
@@ -8,8 +8,7 @@ print("Opening ", filename, "...")
 original = Image.open(filename)
 
 # Fill Data
-transformations = []
-transformations.append(original)
+transformations = [original]
 
 # Transform
 while (True):
