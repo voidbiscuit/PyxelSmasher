@@ -11,7 +11,7 @@ original = Image.open(filename)
 transformations = [original]
 
 # Transform
-while (True):
+while True:
     image = transformations[-1]
     # Menu
     print(str.format(
@@ -39,8 +39,8 @@ while (True):
         choice = choice[0]
 
         if choice == 'G':
-            blurby = int(input("\nGaussian Blur by how much? : "))
-            transformations.append(pf.modify(image=image, choice='G', params=blurby))
+            blur_factor = int(input("\nGaussian Blur by how much? : "))
+            transformations.append(pf.modify(image=image, choice='G', params=blur_factor))
         elif choice == 'N':
             transformations.append(pf.modify(image=image, choice='N'))
         elif choice == 'B':
@@ -48,9 +48,9 @@ while (True):
                 transformations.pop()
 
         elif choice == 'S':
-            scriptfile = 'scripts/' + input("\nEnter filename <filename>.sc : ") + ".sc"
+            script_file = 'scripts/' + input("\nEnter filename <filename>.sc : ") + ".sc"
             try:
-                file = open(scriptfile, 'r')
+                file = open(script_file, 'r')
                 script = file.readlines()
                 file.close()
                 for line in script:
