@@ -1,6 +1,7 @@
 # Imports
 from PIL import Image, ImageShow
 import picturefunctions as pf
+from matplotlib import pyplot as plt
 
 # File Open
 filename = 'pictures/PandaNoise.bmp'
@@ -20,6 +21,7 @@ while True:
         "\n"
         "\nG | Gaussian Blur"
         "\nN | Remove Noise"
+        "\nF | Fourier Transform"
         "\nB | Back"
         "\nS | Run Script"
         "\nNumerical Value to Open Picture Specified [{0}]"
@@ -33,12 +35,16 @@ while True:
     elif choice.isdecimal():
         choice = int(choice)
         if 0 < choice <= len(transformations):
-            ImageShow.show(transformations[choice - 1])
+            plt.subplot(111), plt.imshow(transformations[choice - 1], cmap='gray')
+            plt.title("Image [" + str(choice) + "]"), plt.xticks([]), plt.yticks([])
+            plt.show()
+            # ImageShow.show(transformations[choice - 1])
     # Else, get first char of input converted to upper, and use as case in switch.
     else:
         choice = choice[0]
-
-        if choice == 'G':
+        if choice == 'V':
+            pf.modify()
+        elif choice == 'G':
             blur_factor = int(input("\nGaussian Blur by how much? : "))
             transformations.append(pf.modify(image=image, choice='G', params=blur_factor))
         elif choice == 'N':
@@ -46,6 +52,8 @@ while True:
         elif choice == 'B':
             if 1 < len(transformations):
                 transformations.pop()
+        elif choice == 'F':
+            transformations.append(pf.modify(image=image, choice='F'))
 
         elif choice == 'S':
             script_file = 'scripts/' + input("\nEnter filename <filename>.sc : ") + ".sc"
