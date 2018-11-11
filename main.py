@@ -1,16 +1,20 @@
 # Imports
+import numpy as np
+
 from PIL import Image
 import picturefunctions as pf
 from matplotlib import pyplot as plt
 
 plt.close()
 # File Open
-filename = 'pictures/PandaNoise.bmp'
-print("Opening ", filename, "...")
-original = Image.open(filename)
+original = 'pictures/PandaOriginal.bmp'
+noise = 'pictures/PandaNoise.bmp'
+print("Opening ", noise, "...")
+original = Image.open(original)
+noise = Image.open(noise)
 
 # Fill Data
-transformations = [original]
+transformations = [noise]
 
 # Transform
 while True:
@@ -18,6 +22,8 @@ while True:
     # Menu
     print(str.format(
         "\n\n\n\n\n\n\n\n\n\n"
+        "\n error = {0}"
+        "\n"
         "\n  - - - - Menu"
         "\n"
         "\nG | Gaussian Blur"
@@ -25,8 +31,13 @@ while True:
         "\nF | Fourier Transform"
         "\nB | Back"
         "\nS | Run Script"
-        "\nNumerical Value to Open Picture Specified [{0}]"
+        "\nNumerical Value to Open Picture Specified [{1}]"
+        "\n"
+        "\n"
         "\n",
+        str(np.sqrt(np.mean(np.square(
+            np.array(original) - np.array(image)
+        )))),
         len(transformations)
     ))
     choice = input("\nCommand : ").upper()
@@ -39,7 +50,10 @@ while True:
             plt.subplot(111), plt.imshow(transformations[choice - 1], cmap='gray')
             plt.title("Image [" + str(choice) + "]"), plt.xticks([]), plt.yticks([])
             plt.show()
-            # ImageShow.show(transformations[choice - 1])
+        elif 0 == choice:
+            plt.subplot(111), plt.imshow(original, cmap='gray')
+            plt.title("Image [Original]"), plt.xticks([]), plt.yticks([])
+            plt.show()
     # Else, get first char of input converted to upper, and use as case in switch.
     else:
         params = str(choice).replace("\s+", " ").split(" ")
@@ -78,10 +92,11 @@ while True:
                         elif len(params) > 0:
                             params = params[1:]
                         print(str(choice) + " " + str(params))
-                        transformations.append(pf.modify(
+                        image = pf.modify(
                             image=image,
                             choice=choice[0],
                             params=params
-                        ))
+                        )
+                        transformations.append(image)
             except FileNotFoundError:
                 print("File not found")

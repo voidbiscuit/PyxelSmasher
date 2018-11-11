@@ -1,14 +1,11 @@
 xscale = 1.4
 yscale = 3
 
-max = 150
+max = 100
 
 file = open("fourier.sc", "w")
 filebuffer = ""
-for i in range(1, 50):
-    xval = round(i * xscale)
-    yval = round(i * yscale)
-    if xval < max and yval < max:
-        filebuffer += "\nf " + str(yval) + " " + str(xval)
+for i in range(0, 100):
+    filebuffer += "\nf " + str(36)
 file.writelines(filebuffer)
 file.close()
