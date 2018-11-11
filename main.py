@@ -3,6 +3,7 @@ from PIL import Image, ImageShow
 import picturefunctions as pf
 from matplotlib import pyplot as plt
 
+plt.close();
 # File Open
 filename = 'pictures/PandaNoise.bmp'
 print("Opening ", filename, "...")
@@ -41,35 +42,45 @@ while True:
             # ImageShow.show(transformations[choice - 1])
     # Else, get first char of input converted to upper, and use as case in switch.
     else:
-        choice = choice[0]
+        params = str(choice).replace("\s+", " ").split(" ")
+        choice = params[0]
+        if (len(params) > 0):
+            params = params[1:]
         if choice == 'V':
             pf.modify()
         elif choice == 'G':
-            blur_factor = int(input("\nGaussian Blur by how much? : "))
-            transformations.append(pf.modify(image=image, choice='G', params=blur_factor))
+            transformations.append(pf.modify(image=image, choice='G', params=params))
         elif choice == 'N':
-            transformations.append(pf.modify(image=image, choice='N'))
+            transformations.append(pf.modify(image=image, choice='N', params=params))
         elif choice == 'B':
             if 1 < len(transformations):
                 transformations.pop()
         elif choice == 'F':
-            transformations.append(pf.modify(image=image, choice='F'))
+            transformations.append(pf.modify(image=image, choice='F', params=params))
 
         elif choice == 'S':
-            script_file = 'scripts/' + input("\nEnter filename <filename>.sc : ") + ".sc"
+            params = params[0]
+            print(str(params))
+            script_file = 'scripts/' + params + ".sc"
+            print(script_file)
             try:
                 file = open(script_file, 'r')
                 script = file.readlines()
                 file.close()
                 for line in script:
-                    instruction = line.replace('\n', '').split(' ')
-                    if len(instruction) > 0:
-                        # print(instruction)
-                        image = pf.modify(
-                            image=image,
-                            choice=instruction[0],
-                            params=0 if len(instruction) < 2 else instruction[1:]
-                        )
-                    transformations.append(image)
+                    line = line.upper()
+                    params = line.replace('\n', '').replace("\s", " ").split(' ')
+                    choice = params[0]
+                    if choice == 'B':
+                        if 1 < len(transformations):
+                            transformations.pop()
+                    elif len(params) > 0:
+                        params = params[1:]
+                    print(str(choice) + " " + str(params))
+                    transformations.append(pf.modify(
+                        image=image,
+                        choice=choice[0],
+                        params=params
+                    ))
             except FileNotFoundError:
                 print("File not found")
