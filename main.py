@@ -1,9 +1,9 @@
 # Imports
-from PIL import Image, ImageShow
+from PIL import Image
 import picturefunctions as pf
 from matplotlib import pyplot as plt
 
-plt.close();
+plt.close()
 # File Open
 filename = 'pictures/PandaNoise.bmp'
 print("Opening ", filename, "...")
@@ -44,10 +44,10 @@ while True:
     else:
         params = str(choice).replace("\s+", " ").split(" ")
         choice = params[0]
-        if (len(params) > 0):
+        if len(params) > 0:
             params = params[1:]
-        if choice == 'V':
-            pf.modify()
+        if choice == 'C':
+            transformations = [transformations[0]]
         elif choice == 'G':
             transformations.append(pf.modify(image=image, choice='G', params=params))
         elif choice == 'N':
@@ -70,17 +70,18 @@ while True:
                 for line in script:
                     line = line.upper()
                     params = line.replace('\n', '').replace("\s", " ").split(' ')
-                    choice = params[0]
-                    if choice == 'B':
-                        if 1 < len(transformations):
-                            transformations.pop()
-                    elif len(params) > 0:
-                        params = params[1:]
-                    print(str(choice) + " " + str(params))
-                    transformations.append(pf.modify(
-                        image=image,
-                        choice=choice[0],
-                        params=params
-                    ))
+                    if len(line.strip("\n")) > 0:
+                        choice = params[0]
+                        if choice == 'B':
+                            if 1 < len(transformations):
+                                transformations.pop()
+                        elif len(params) > 0:
+                            params = params[1:]
+                        print(str(choice) + " " + str(params))
+                        transformations.append(pf.modify(
+                            image=image,
+                            choice=choice[0],
+                            params=params
+                        ))
             except FileNotFoundError:
                 print("File not found")

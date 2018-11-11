@@ -16,17 +16,18 @@ def modify(image, choice=' ', params=0):
             return image  # return
         if int(params[0]) < 1:  # If the blur is less than 1
             return image  # return
-        image= image.filter(ImageFilter.GaussianBlur(int(params[0])))  # Return blurred image
+        image = image.filter(ImageFilter.GaussianBlur(int(params[0])))  # Return blurred image
         plt.subplot(111), plt.imshow(image, cmap='gray')
         plt.title('Result'), plt.xticks([]), plt.yticks([])
 
     elif choice == 'N':  # Enhancing Edges
-        image= image.filter(ImageFilter.EDGE_ENHANCE)
+        image = image.filter(ImageFilter.EDGE_ENHANCE)
         plt.subplot(111), plt.imshow(image, cmap='gray')
         plt.title('Result'), plt.xticks([]), plt.yticks([])
 
     elif choice == 'F':
-        # Using https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_transforms/py_fourier_transform/py_fourier_transform.html
+        # Using
+        # https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_transforms/py_fourier_transform/py_fourier_transform.html
         dft = cv2.dft(np.float32(image), flags=cv2.DFT_COMPLEX_OUTPUT)
         dft_shift = np.fft.fftshift(dft)
 
@@ -37,12 +38,13 @@ def modify(image, choice=' ', params=0):
         plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
 
         cols, rows = image.size
-        xshift = int(params[0]) if len(params) > 0 else 0
-        yshift = int(params[1]) if len(params) > 1 else 0
+        hcols, hrows = round(cols / 2), round(rows / 2)
+        xshift = int(params[0]) if len(params) > 0 else 120
+        yshift = int(params[1]) if len(params) > 1 else 70
 
         # create a mask first, center square is 1, remaining all zeros
         mask = np.zeros((rows, cols, 2), np.uint8)
-        mask[yshift:rows - yshift, xshift:cols - xshift] = 1
+        mask[hrows - yshift:hrows + yshift, hcols - xshift:hcols + xshift] = 1
 
         # for j in range(0, cols):
         #    for i in range(0, rows):
