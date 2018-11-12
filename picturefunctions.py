@@ -1,4 +1,4 @@
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageEnhance
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -21,8 +21,22 @@ def modify(image, choice=' ', params=0):
         plt.title('Result'), plt.xticks([]), plt.yticks([])
         plt.show()
 
-    elif choice == 'N':  # Enhancing Edges
+    elif choice == 'E':  # Enhancing Edges
         image = image.filter(ImageFilter.EDGE_ENHANCE)
+        plt.subplot(111), plt.imshow(image, cmap='gray')
+        plt.title('Result'), plt.xticks([]), plt.yticks([])
+        plt.show()
+
+    elif choice == 'N':  # Contrast
+        contrast = ImageEnhance.Contrast(image)
+        image = contrast.enhance(float(params[0]))
+        plt.subplot(111), plt.imshow(image, cmap='gray')
+        plt.title('Result'), plt.xticks([]), plt.yticks([])
+        plt.show()
+
+    elif choice == 'M':  # Brightness
+        brightness = ImageEnhance.Brightness(image)
+        image = brightness.enhance(float(params[0]))
         plt.subplot(111), plt.imshow(image, cmap='gray')
         plt.title('Result'), plt.xticks([]), plt.yticks([])
         plt.show()
@@ -46,14 +60,17 @@ def modify(image, choice=' ', params=0):
             xshift = round(int(params[0]) * percx)
             yshift = round(int(params[1]) * percy)
         elif len(params) == 1:
-            xshift = round(int(params[0]) * percx)
-            yshift = round(int(params[0]) * percy)
+            xshift = round(float(params[0]) * percx)
+            yshift = round(float(params[0]) * percy)
         else:
             xshift = round(hcols)
             yshift = round(hrows)
         # 2d array of 0s created, then replace a smaller rectangle with 1s as mask
         mask = np.zeros((rows, cols, 2), np.uint8)
         mask[hrows - yshift:hrows + yshift, hcols - xshift:hcols + xshift] = [1, 1]
+        for i in range(1, rows):
+            for j in range(1, cols):
+                dft_shift[i, j] = (dft_shift[i, j] * 1.2 if 10 < magnitude_spectrum[i, j] < 20 else dft_shift[i, j])
         magnitude_spectrum[:] *= (mask[:, :, 0] + 1) / 2
         # Some weird code to filter some magnitude spectrum stuff.
         # Multiply shift with mask for masked shift, and inverse the shift
@@ -63,7 +80,7 @@ def modify(image, choice=' ', params=0):
         img_back = cv2.idft(f_ishift)
         img_back = cv2.magnitude(img_back[:, :, 0], img_back[:, :, 1])
         # Convert picture back to BMP
-        formatted = (img_back * 255 / np.max(img_back)).astype('uint8')
+        formatted = (img_back * 256 / np.max(img_back)).astype('uint8')
         img_back = Image.fromarray(formatted)
 
         plt.subplot(221), plt.imshow(image, cmap='gray')
@@ -73,7 +90,8 @@ def modify(image, choice=' ', params=0):
         plt.subplot(223), plt.imshow(mask[:, :, 0], cmap='gray')
         plt.title('Mask'), plt.xticks([]), plt.yticks([])
         plt.subplot(224), plt.imshow(img_back, cmap='gray')
-        plt.title("Result [" + str(xshift) + " " + str(yshift) + "]"), plt.xticks([]), plt.yticks([])
+        plt.title("Result " + str(params)), \
+        plt.xticks([]), plt.yticks([])
         plt.show()
         image = img_back
 

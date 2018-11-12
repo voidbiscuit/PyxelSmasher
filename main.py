@@ -60,18 +60,13 @@ while True:
         choice = params[0]
         if len(params) > 0:
             params = params[1:]
+
         if choice == 'C':
             transformations = [transformations[0]]
-        elif choice == 'G':
-            transformations.append(pf.modify(image=image, choice='G', params=params))
-        elif choice == 'N':
-            transformations.append(pf.modify(image=image, choice='N', params=params))
+            image= transformations[0]
         elif choice == 'B':
             if 1 < len(transformations):
                 transformations.pop()
-        elif choice == 'F':
-            transformations.append(pf.modify(image=image, choice='F', params=params))
-
         elif choice == 'S':
             params = params[0]
             print(str(params))
@@ -100,3 +95,9 @@ while True:
                         transformations.append(image)
             except FileNotFoundError:
                 print("File not found")
+        else:
+            image = pf.modify(image=image, choice=choice, params=params)
+            transformations.append(image)
+    plt.subplot(111), plt.imshow(image, cmap='gray')
+    plt.title("Image [" + str(len(transformations)) + "]"), plt.xticks([]), plt.yticks([])
+    plt.show()

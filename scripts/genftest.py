@@ -6,6 +6,6 @@ max = 100
 file = open("fourier.sc", "w")
 filebuffer = ""
 for i in range(0, 100):
-    filebuffer += "\nf " + str(36)
+    filebuffer += "\nf " + str(100-i)
 file.writelines(filebuffer)
 file.close()
